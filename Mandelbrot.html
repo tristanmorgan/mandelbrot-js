@@ -1,0 +1,153 @@
+<html>  
+  <head>  
+    <title>Canvas experiment</title>
+<link rel="icon" type="image/png"
+ href="./mandelbrot.png" />
+
+<script type="text/javascript"><!--
+  var te = -2;
+  var be = -1*te;
+  var le = -2;
+  var re = -1*le;
+  var pixelData;
+  var clickCount = 0;
+  var maxIter = 32;
+
+var ComplexNumber = function(real, imaginary)
+{
+  this.real = real;
+  this.imaginary = imaginary;
+  this.square = function()
+  {
+    var tempReal = this.real * this.real - this.imaginary * this.imaginary;
+    var tempImg = 2 * this.real * this.imaginary;
+    this.real = tempReal;
+    this.imaginary = tempImg;
+  }
+  this.add = function(other)
+  {
+    var tempReal = this.real + other.real;
+    var tempImg = this.imaginary + other.imaginary;
+    this.real = tempReal;
+    this.imaginary = tempImg;
+  }
+  this.abs = function()
+  {
+    var tempReal = this.real * this.real + this.imaginary * this.imaginary;
+    return tempReal;
+  }
+}
+
+  function mandelFract(j,i,max)
+  {
+    var c = new ComplexNumber(i,j);
+    var z = new ComplexNumber(i,j);
+    var abs = z.abs();
+    for(var iter = 0;iter < max; iter++)
+    {
+      if(abs > 4)
+        return iter + 4/abs;
+
+      z.square();
+      z.add(c);
+      abs = z.abs();
+    }
+    return -1;
+  }
+
+function reset()
+{
+  te = -2;
+  be = -1*te;
+  le = -2;
+  re = -1*le;
+  clickCount = 0;
+
+  draw();
+}
+
+function back()
+{
+  var zoom = (re-le)/2;
+  le = le - zoom;
+  re = re + zoom;
+  te = te - zoom;
+  be = be + zoom;
+  clickCount--;
+
+  draw();
+}
+
+function clicked(event)
+{
+  var pos_x = event.pageX - document.getElementById('canvas').offsetLeft;
+  var pos_y = event.pageY - document.getElementById('canvas').offsetTop;
+
+  pos_x = (pos_x / document.getElementById('canvas').width) * (re-le) + le;
+  pos_y = (pos_y / document.getElementById('canvas').width) * (be-te) + te;
+
+  le = (le + pos_x) /2;
+  re = (re + pos_x) /2;
+  te = (te + pos_y) /2;
+  be = (be + pos_y) /2;
+  clickCount++;
+
+  draw();
+}
+
+  function draw() {  
+    
+    var ctx = document.getElementById('canvas').getContext('2d');  
+    var canvasHW = document.getElementById('canvas').width;
+    var a,r,g,b,s;
+    var maxA = 0;
+
+    pixelData = ctx.createImageData(canvasHW, canvasHW);
+
+    var step = (te-be)/canvasHW;
+    for (var i=0;i<canvasHW;i++){  
+      for (var j=0;j<canvasHW;j++){  
+        a = mandelFract(te - step*i,le - step*j,maxIter);
+        if(a < 0){
+          r = 0;
+          b = 0;
+          g = 0;
+        } else {
+          r = Math.floor(128*Math.sin(a/30) + 127);
+          g = Math.floor(128*Math.sin(a/30 + 2) + 127);
+          b = Math.floor(128*Math.sin(a/30 + 4) + 127);
+          if(a > maxA) maxA = a;
+        }
+        fillDot(r,g,b,j,i,canvasHW);
+      }
+    }
+    ctx.putImageData(pixelData, 0, 0);
+    document.getElementById('clickCountBox').value = clickCount + ' lim:' + Math.floor(maxA);
+    maxIter = Math.floor(maxA * 1.5);
+    if(maxIter > 1024) maxIter = 1024;
+    if(maxIter < 8) maxIter = 8;
+  }
+
+  function fillDot(r,g,b,x,y,canvasHW)
+  {
+    var index = x * 4 + y * canvasHW * 4;
+    pixelData.data[index] = r;
+    pixelData.data[index + 1] = g;
+    pixelData.data[index + 2] = b;
+    pixelData.data[index + 3] = 255;
+  }
+
+//--></script>  
+    <style type="text/css">  
+      canvas { border: 1px solid black; }  
+    </style>
+  </head>
+  <body onload="draw();">
+    <canvas id="canvas" width="600" height="600" onclick="clicked(event)">Canvas Element not available</canvas>
+    <br/>
+    <input type="button" name="Button.Back" value="back" onclick='javascript:back()' />
+    <input type="button" name="Button.Reset" value="reset" onclick='javascript:reset()' />
+    <input type="text" name="clickCountBox" id="clickCountBox" value=""/>
+  </body>  
+</html> 
+

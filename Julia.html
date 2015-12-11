@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Mandelbrot on canvas</title>
+    <title>Julia set on canvas</title>
 <link rel="icon" type="image/png" href="./mandelbrot.png" />
 
 <script type="text/javascript"><!--
@@ -11,6 +11,9 @@
   var clickCount = 0;
   var maxIter = 32;
   var minter = -1;
+  var c;
+  var firstRun = true;
+
 
 var ComplexNumber = function(real, imaginary)
 {
@@ -37,13 +40,14 @@ var ComplexNumber = function(real, imaginary)
   }
 }
 
-  function mandelFract(j,i,max)
+  function juliaFract(j,i,max)
   {
-    var c = new ComplexNumber(i,j);
     var z = new ComplexNumber(i,j);
     var abs = z.abs();
     var minA = abs;
     var maxA = abs;
+  if(firstRun)
+    c = new ComplexNumber(i,j);
 
     for(var iter = 0;iter < max; iter++)
     {
@@ -67,6 +71,9 @@ function reset()
   maxIter = 32;
   minter = -1
   clickCount = 0;
+  document.getElementById('coordr').value = '-0.24358749389648438';
+  document.getElementById('coordi').value = '-0.7423019409179688';
+  firstRun = true;
 
   draw();
 }
@@ -108,11 +115,18 @@ function clicked(event)
   pos_x = (pos_x / document.getElementById('canvas').width) * width + left;
   pos_y = (pos_y / document.getElementById('canvas').width) * width + topVal;
 
+if(firstRun)
+{
+    document.getElementById('coordr').value = pos_x;
+    document.getElementById('coordi').value = pos_y;
+}else{
   left = pos_x - width/4;
   topVal = pos_y - width/4;
+
   width = width/2;
   clickCount++;
-
+}
+  firstRun = false;
   draw();
 }
 
@@ -125,10 +139,15 @@ function clicked(event)
     var negA = 0;
     pixelData = ctx.createImageData(canvasHW, canvasHW);
 
+    a = Number(document.getElementById('coordr').value);
+    r = Number(document.getElementById('coordi').value);
+    c = new ComplexNumber(a,r);
+
+
     var step = width/canvasHW;
     for (var i=0;i<canvasHW;i++){
       for (var j=0;j<canvasHW;j++){
-        a = mandelFract(topVal + step*i,left + step*j,maxIter);
+        a = juliaFract(topVal + step*i,left + step*j,maxIter);
         if(a <= 0){
           r = Math.floor(-127.5*Math.cos(3.1415*a/minter) + 127.5);
           b = r;
@@ -145,25 +164,10 @@ function clicked(event)
       }
     }
 
-    //trace center dot.
-    var c = new ComplexNumber(topVal + width/2,left + width/2);
-    var z = new ComplexNumber(topVal + width/2,left + width/2);
-    var x, y;
-
-    for(var ier = 0;ier < 100; ier++)
-    {
-      x = Math.floor((z.real - topVal) / step);
-      y = Math.floor((z.imaginary - left) / step);
-      fillDot(255,0,128,y,x,canvasHW);
-      z.square();
-      x = Math.floor((z.real - topVal) / step);
-      y = Math.floor((z.imaginary - left) / step);
-      fillDot(128,0,255,y,x,canvasHW);
-      z.add(c);
-    }
-
     ctx.putImageData(pixelData, 0, 0);
     document.getElementById('clickCountBox').value = 'z:' + clickCount + ' l:' + Math.floor(minA) + '-'+ Math.floor(maxA) + ' r:' + (left + width/2) + ' i:' + (topVal + width/2);
+    document.getElementById('coordr').value = c.real;
+    document.getElementById('coordi').value = c.imaginary;
 
     maxIter = Math.floor(maxA * 1.25);
     if(maxIter > 1024) maxIter = 1024;
@@ -189,6 +193,9 @@ function clicked(event)
     </style>
   </head>
   <body onload="draw();">
+    <input type="text" name="coordr" id="coordr" value=""/>
+    <input type="text" name="coordi" id="coordi" value=""/>
+    <br/>
     <canvas id="canvas" width="512" height="512" onclick="clicked(event)">Canvas Element not available</canvas>
     <br/>
     <input type="button" name="Button.Back" value="back" onclick='javascript:back()' />

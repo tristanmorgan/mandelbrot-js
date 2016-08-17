@@ -1,11 +1,10 @@
+<?xml version="1.0"?>
 <html>
-
-<head>
+  <head>
     <title>Mandelbrot on canvas</title>
-    <link rel="icon" type="image/png" href="./mandelbrot.png" />
-
+    <link rel="icon" type="image/png" href="./mandelbrot.png"/>
     <script type="text/javascript">
-        <!--
+      <!--
         var topVal = -2;
         var left = -2;
         var width = -2 * left;
@@ -165,17 +164,15 @@
             border: 1px solid black;
         }
     </style>
-</head>
-
-<body onload="draw();">
+  </head>
+  <body onload="draw();">
     <canvas id="canvas" width="1280" height="1280" style="width:640; height:640;" onclick="clicked(event)">Canvas Element not available</canvas>
     <br/>
-    <input type="button" name="Button.Back" value="back" onclick='javascript:back()' />
-    <input type="button" name="Button.Reset" value="reset" onclick='javascript:reset()' />
-    <input type="text" name="clickCountBox" id="clickCountBox" value="" />
-    <input type="button" name="Button.reduce" value="-" onclick='javascript:reduce()' />
-    <input type="button" name="Button.redraw" value="0" onclick='javascript:draw()' />
-    <input type="button" name="Button.produce" value="+" onclick='javascript:produce()' />
-</body>
-
+    <input type="button" name="Button.Back" value="back" onclick="javascript:back()"/>
+    <input type="button" name="Button.Reset" value="reset" onclick="javascript:reset()"/>
+    <input type="text" name="clickCountBox" id="clickCountBox" value=""/>
+    <input type="button" name="Button.reduce" value="-" onclick="javascript:reduce()"/>
+    <input type="button" name="Button.redraw" value="0" onclick="javascript:draw()"/>
+    <input type="button" name="Button.produce" value="+" onclick="javascript:produce()"/>
+  </body>
 </html>

@@ -1,9 +1,10 @@
+<?xml version="1.0"?>
 <html>
   <head>
     <title>Julia set on canvas</title>
-<link rel="icon" type="image/png" href="./mandelbrot.png" />
-
-<script type="text/javascript"><!--
+    <link rel="icon" type="image/png" href="./mandelbrot.png"/>
+    <script type="text/javascript">
+      <!--
   var topVal = -2;
   var left = -2;
   var width = -2 * left;
@@ -187,8 +188,9 @@ if(firstRun)
     pixelData.data[index + 3] = 255;
   }
 
-//--></script>  
-    <style type="text/css">  
+//-->
+    </script>
+    <style type="text/css">
       canvas { border: 1px solid black; }  
     </style>
   </head>
@@ -198,11 +200,11 @@ if(firstRun)
     <br/>
     <canvas id="canvas" width="512" height="512" onclick="clicked(event)">Canvas Element not available</canvas>
     <br/>
-    <input type="button" name="Button.Back" value="back" onclick='javascript:back()' />
-    <input type="button" name="Button.Reset" value="reset" onclick='javascript:reset()' />
+    <input type="button" name="Button.Back" value="back" onclick="javascript:back()"/>
+    <input type="button" name="Button.Reset" value="reset" onclick="javascript:reset()"/>
     <input type="text" name="clickCountBox" id="clickCountBox" value=""/>
-    <input type="button" name="Button.reduce" value="-" onclick='javascript:reduce()' />
-    <input type="button" name="Button.redraw" value="0" onclick='javascript:draw()' />
-    <input type="button" name="Button.produce" value="+" onclick='javascript:produce()' />
-  </body>  
-</html> 
+    <input type="button" name="Button.reduce" value="-" onclick="javascript:reduce()"/>
+    <input type="button" name="Button.redraw" value="0" onclick="javascript:draw()"/>
+    <input type="button" name="Button.produce" value="+" onclick="javascript:produce()"/>
+  </body>
+</html>
